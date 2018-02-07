@@ -22,7 +22,7 @@ class OnlineTfidfDocRanker(TfidfDocRanker):
     Scores new queries by taking sparse dot products.
     """
 
-    def __init__(self, args, lines, strict=True):
+    def __init__(self, args, lines, freqs = None, strict=True):
         """
         Args:
             tfidf_path: path to saved model file
@@ -37,8 +37,9 @@ class OnlineTfidfDocRanker(TfidfDocRanker):
         logger.info('Making tfidf vectors...')
         tfidf = get_tfidf_matrix(count_matrix)
 
-        logger.info('Getting word-doc frequencies...')
-        freqs = get_doc_freqs(count_matrix)
+        if freqs is None:
+            logger.info('Getting word-doc frequencies...')
+            freqs = get_doc_freqs(count_matrix)
 
         metadata = {
             'doc_freqs': freqs,
