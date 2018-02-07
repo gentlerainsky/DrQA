@@ -27,8 +27,12 @@ def get_class(name):
         return TfidfDocRanker
     if name == 'sqlite':
         return DocDB
+    if name == 'memory':
+        return Simple
+
     raise RuntimeError('Invalid retriever class: %s' % name)
 
 
+from .simple import Simple
 from .doc_db import DocDB
 from .tfidf_doc_ranker import TfidfDocRanker
