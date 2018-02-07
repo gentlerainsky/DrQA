@@ -6,32 +6,15 @@
 # LICENSE file in the root directory of this source tree.
 """A script to build the tf-idf document matrices for retrieval."""
 
-import numpy as np
-import scipy.sparse as sp
 import argparse
-import os
 import math
 import logging
 
-from multiprocessing import Pool as ProcessPool
-from multiprocessing.util import Finalize
-from functools import partial
-from collections import Counter
-
 from drqa.retriever import TfidfDocRanker
-
-from drqa import retriever
 from drqa import tokenizers
 from scripts.retriever.build_tfidf import get_count_matrix, get_tfidf_matrix, get_doc_freqs
 
 logger = logging.getLogger()
-logger.setLevel(logging.INFO)
-fmt = logging.Formatter('%(asctime)s: [ %(message)s ]', '%m/%d/%Y %I:%M:%S %p')
-console = logging.StreamHandler()
-console.setFormatter(fmt)
-logger.addHandler(console)
-
-
 
 
 class OnlineTfidfDocRanker(TfidfDocRanker):
