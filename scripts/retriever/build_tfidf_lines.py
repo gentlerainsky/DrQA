@@ -31,11 +31,8 @@ class OnlineTfidfDocRanker(TfidfDocRanker):
         # Load from disk
         logging.info('Counting words...')
 
-        tb = TfIdfBuilder()
-
-        count_matrix, doc_dict = tb.get_count_matrix(
-            args, 'memory', {'lines': lines}
-        )
+        tb = TfIdfBuilder(args, 'memory', {'lines': lines})
+        count_matrix, doc_dict = tb.get_count_matrix()
 
         logger.info('Making tfidf vectors...')
         tfidf = tb.get_tfidf_matrix(count_matrix)

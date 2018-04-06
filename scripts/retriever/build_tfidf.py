@@ -35,14 +35,22 @@ logger.addHandler(console)
 
 class TfIdfBuilder:
 
-    def init_thread(self, tokenizer_class, db_class, db_opts):
+    def __init__(self, args, db, db_opts):
         self.DOC2IDX = None
         self.PROCESS_TOK = None
         self.PROCESS_DB = None
 
-        self.PROCESS_TOK = tokenizer_class()
-        Finalize(self.PROCESS_TOK, self.PROCESS_TOK.shutdown, exitpriority=100)
+        self.args = args
+
+        tok_class = tokenizers.get_class(args.tokenizer)
+        db_class =  retriever.get_class(db)
+
+        self.PROCESS_TOK = tok_class()
         self.PROCESS_DB = db_class(**db_opts)
+
+
+    def init_thread(self):
+        Finalize(self.PROCESS_TOK, self.PROCESS_TOK.shutdown, exitpriority=100)
         Finalize(self.PROCESS_DB, self.PROCESS_DB.close, exitpriority=100)
 
 
@@ -80,31 +88,26 @@ class TfIdfBuilder:
         return row, col, data
 
 
-    def get_count_matrix(self,args, db, db_opts):
+    def get_count_matrix(self):
         """Form a sparse word to document count matrix (inverted index).
 
         M[i, j] = # times word i appears in document j.
         """
         # Map doc_ids to indexes
-        db_class = retriever.get_class(db)
-        with db_class(**db_opts) as doc_db:
-            doc_ids = doc_db.get_doc_ids()
+        doc_ids = self.PROCESS_DB.get_doc_ids()
         self.DOC2IDX = {doc_id: i for i, doc_id in enumerate(doc_ids)}
 
         # Setup worker pool
-        tok_class = tokenizers.get_class(args.tokenizer)
         workers = ProcessPool(
-            args.num_workers,
-            initializer=self.init_thread,
-            initargs=(tok_class, db_class, db_opts)
-        )
+            self.args.num_workers,
+            initializer=self.init_thread)
 
         # Compute the count matrix in steps (to keep in memory)
         logger.info('Mapping...')
         row, col, data = [], [], []
         step = max(int(len(doc_ids) / 10), 1)
         batches = [doc_ids[i:i + step] for i in range(0, len(doc_ids), step)]
-        _count = partial(self.count, args.ngram, args.hash_size)
+        _count = partial(self.count, self.args.ngram, self.args.hash_size)
         for i, batch in enumerate(batches):
             logger.info('-' * 25 + 'Batch %d/%d' % (i + 1, len(batches)) + '-' * 25)
             for b_row, b_col, b_data in workers.imap_unordered(_count, batch):
@@ -116,7 +119,7 @@ class TfIdfBuilder:
 
         logger.info('Creating sparse matrix...')
         count_matrix = sp.csr_matrix(
-            (data, (row, col)), shape=(args.hash_size, len(doc_ids))
+            (data, (row, col)), shape=(self.args.hash_size, len(doc_ids))
         )
         count_matrix.sum_duplicates()
         return count_matrix, (self.DOC2IDX, doc_ids)
@@ -175,10 +178,8 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     logging.info('Counting words...')
-    tb = TfIdfBuilder()
-    count_matrix, doc_dict = tb.get_count_matrix(
-        args, 'sqlite', {'db_path': args.db_path}
-    )
+    tb = TfIdfBuilder(args, 'sqlite', {'db_path': args.db_path})
+    count_matrix, doc_dict = tb.get_count_matrix()
 
     logger.info('Making tfidf vectors...')
     tfidf = tb.get_tfidf_matrix(count_matrix)
