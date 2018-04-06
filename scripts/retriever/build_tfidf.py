@@ -97,10 +97,6 @@ class TfIdfBuilder:
         doc_ids = self.PROCESS_DB.get_doc_ids()
         self.DOC2IDX = {doc_id: i for i, doc_id in enumerate(doc_ids)}
 
-        # Setup worker pool
-        workers = ProcessPool(
-            self.args.num_workers,
-            initializer=self.init_thread)
 
         # Compute the count matrix in steps (to keep in memory)
         logger.info('Mapping...')
@@ -110,12 +106,10 @@ class TfIdfBuilder:
         _count = partial(self.count, self.args.ngram, self.args.hash_size)
         for i, batch in enumerate(batches):
             logger.info('-' * 25 + 'Batch %d/%d' % (i + 1, len(batches)) + '-' * 25)
-            for b_row, b_col, b_data in workers.imap_unordered(_count, batch):
+            for b_row, b_col, b_data in map(_count, batch):
                 row.extend(b_row)
                 col.extend(b_col)
                 data.extend(b_data)
-        workers.close()
-        workers.join()
 
         logger.info('Creating sparse matrix...')
         count_matrix = sp.csr_matrix(
