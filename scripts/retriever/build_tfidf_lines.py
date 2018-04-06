@@ -12,7 +12,7 @@ import logging
 
 from drqa.retriever import TfidfDocRanker
 from drqa import tokenizers
-from scripts.retriever.build_tfidf import get_count_matrix, get_tfidf_matrix, get_doc_freqs
+from scripts.retriever.build_tfidf import TfIdfBuilder
 
 logger = logging.getLogger()
 
@@ -30,16 +30,19 @@ class OnlineTfidfDocRanker(TfidfDocRanker):
         """
         # Load from disk
         logging.info('Counting words...')
-        count_matrix, doc_dict = get_count_matrix(
+
+        tb = TfIdfBuilder()
+
+        count_matrix, doc_dict = tb.get_count_matrix(
             args, 'memory', {'lines': lines}
         )
 
         logger.info('Making tfidf vectors...')
-        tfidf = get_tfidf_matrix(count_matrix)
+        tfidf = tb.get_tfidf_matrix(count_matrix)
 
         if freqs is None:
             logger.info('Getting word-doc frequencies...')
-            freqs = get_doc_freqs(count_matrix)
+            freqs = tb.get_doc_freqs(count_matrix)
 
         metadata = {
             'doc_freqs': freqs,

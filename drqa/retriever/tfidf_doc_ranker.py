@@ -13,6 +13,8 @@ import scipy.sparse as sp
 from multiprocessing.pool import ThreadPool
 from functools import partial
 
+import sys
+
 from . import utils
 from . import DEFAULTS
 from .. import tokenizers
@@ -106,6 +108,7 @@ class TfidfDocRanker(object):
 
         # Count IDF
         Ns = self.doc_freqs[wids_unique]
+
         idfs = np.log((self.num_docs - Ns + 0.5) / (Ns + 0.5))
         idfs[idfs < 0] = 0
 
