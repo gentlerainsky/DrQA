@@ -12,7 +12,7 @@ import logging
 
 from drqa.retriever import TfidfDocRanker
 from drqa import tokenizers
-from scripts.retriever.build_tfidf import get_count_matrix, get_tfidf_matrix, get_doc_freqs
+from .build_tfidf import get_count_matrix, get_tfidf_matrix, get_doc_freqs
 
 logger = logging.getLogger()
 
