@@ -14,7 +14,7 @@ from drqa.retriever import TfidfDocRanker
 from drqa import tokenizers
 from .build_tfidf import get_count_matrix, get_tfidf_matrix, get_doc_freqs
 
-logger = logging.getLogger()
+logger = logging.getLogger("DRQA")
 
 
 class OnlineTfidfDocRanker(TfidfDocRanker):
