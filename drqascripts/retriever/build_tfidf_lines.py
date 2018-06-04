@@ -12,9 +12,10 @@ import logging
 
 from drqa.retriever import TfidfDocRanker
 from drqa import tokenizers
-from scripts.retriever.build_tfidf import TfIdfBuilder
+from .build_tfidf import TfIdfBuilder
 
-logger = logging.getLogger()
+
+logger = logging.getLogger("DRQA")
 
 
 class OnlineTfidfDocRanker(TfidfDocRanker):
