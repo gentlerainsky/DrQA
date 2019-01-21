@@ -18,9 +18,12 @@ with open('requirements.txt') as f:
     reqs = f.read()
 
 setup(
-    name='drqa',
-    version='0.2.0',
-    description='Reading Wikipedia to Answer Open-Domain Questions',
+    name='fever-drqa',
+    author='James Thorne',
+    author_email='james@jamesthorne.co.uk',
+    url='https://jamesthorne.co.uk',
+    version='0.0.0',
+    description='Adapted version of Facebook's Reading Wikipedia to Answer Open-Domain Questions',
     long_description=readme,
     license=license,
     python_requires='>=3.5',
