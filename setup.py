@@ -23,7 +23,7 @@ setup(
     author_email='james@jamesthorne.co.uk',
     url='https://jamesthorne.co.uk',
     version='0.0.0',
-    description='Adapted version of Facebook's Reading Wikipedia to Answer Open-Domain Questions',
+    description='Adapted version of Facebooks Reading Wikipedia to Answer Open-Domain Questions',
     long_description=readme,
     license=license,
     python_requires='>=3.5',
