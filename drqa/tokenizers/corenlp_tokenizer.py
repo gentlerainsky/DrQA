@@ -120,3 +120,7 @@ class CoreNLPTokenizer(Tokenizer):
                 tokens[i].get('ner', None)
             ))
         return Tokens(data, self.annotators)
+
+
+    def shutdown(self):
+        self.corenlp.close(force=True)
