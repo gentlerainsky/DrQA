@@ -123,4 +123,5 @@ class CoreNLPTokenizer(Tokenizer):
 
 
     def shutdown(self):
+        self.corenlp.sendline("q")
         self.corenlp.close(force=True)
