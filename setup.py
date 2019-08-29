@@ -30,7 +30,7 @@ setup(
     version='0.0.0',
     description='Adapted version of Facebooks Reading Wikipedia to Answer Open-Domain Questions',
     long_description=long_description,
-    long_description_content_type='text/markdown'
+    long_description_content_type='text/markdown',
     license=license,
     python_requires='>=3.5',
     packages=find_packages(exclude=('data')),
