@@ -17,6 +17,11 @@ with open('LICENSE') as f:
 with open('requirements.txt') as f:
     reqs = f.read()
 
+from os import path
+this_directory = path.abspath(path.dirname(__file__))
+with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
+    long_description = f.read()
+
 setup(
     name='fever-drqa',
     author='James Thorne',
@@ -24,7 +29,7 @@ setup(
     url='https://jamesthorne.co.uk',
     version='0.0.0',
     description='Adapted version of Facebooks Reading Wikipedia to Answer Open-Domain Questions',
-    long_description=readme,
+    long_description=long_description,
     long_description_content_type='text/markdown'
     license=license,
     python_requires='>=3.5',
