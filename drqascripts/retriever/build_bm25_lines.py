@@ -44,7 +44,7 @@ class OnlineBM25DocRanker(BM25DocRanker):
             freqs = tb.get_doc_freqs(count_matrix)
 
         metadata = {
-            'doc_counts': freqs,
+            'doc_freqs': freqs,
             'tokenizer': args.tokenizer,
             'hash_size': args.hash_size,
             'ngram': args.ngram,
