@@ -15,8 +15,6 @@ setup(
     name='drqa',
     version='0.1.0',
     description='Reading Wikipedia to Answer Open-Domain Questions',
-    long_description=readme,
-    license=license,
     python_requires='>=3.5',
     packages=find_packages(exclude=('data')),
     install_requires=reqs.strip().split('\n'),
